@@ -11,7 +11,7 @@ const getRestaurants = (req, res) => {
     });
 };
 const getRestaurantByID = (req, res) => {
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.id);
     pool.query(queries.getRestaurantByID, [id], (err, results) => {
         if (err) {
             throw err;
@@ -38,7 +38,7 @@ const addRestaurant = (req, res) => {
 }
 
 const deleteRestaurantByID = (req, res) => {
-    const id = parseInt(req.params.id)
+    const id = parseInt(req.params.id);
     // check if restauraunt in d
     pool.query(queries.getRestaurantByID, [id], (error, results) => {
         if (!results.rows.length) { 
@@ -52,9 +52,31 @@ const deleteRestaurantByID = (req, res) => {
     });
 }
 
+const updateRestaurantByID = (req, res) => {
+    const id = parseInt(req.params.id);
+    const { name } = req.body;
+    
+    pool.query(queries.getRestaurantByID, [id], (error, results) => {
+        if (!results.rows.length) {
+            res.send("No restaurant found.");
+        } else {
+            pool.query(queries.updateRestaurantByID, [name, id], (error, results) => {
+                if (error) throw error;
+                res.status(200).send("Restaurant updated.")
+            });
+            
+        }
+    });
+        
+
+}
+
+
+
 module.exports = {
     getRestaurants,
     getRestaurantByID,
     addRestaurant,
     deleteRestaurantByID,
+    updateRestaurantByID,
 };
